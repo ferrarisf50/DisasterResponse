@@ -89,8 +89,7 @@ def index():
     
     # graph 3 correlation
     
-    df3 = df.drop(columns=['id','message','original','genre','child_alone']).corr()
-    
+    df3 = df.drop(columns=['id','message','original','genre','child_alone']).corr(method ='pearson')
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -145,7 +144,6 @@ def index():
 
             'layout': {
                 'title': 'Top 10 Message Categories'
-                
                 
             }
         }
