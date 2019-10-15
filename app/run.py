@@ -143,7 +143,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Top 10 Message Categories'
+                'title': 'Correlation of Categories'
                 
             }
         }
