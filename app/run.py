@@ -17,6 +17,7 @@ from nltk.corpus import stopwords
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
+from plotly.graph_objs import Heatmap
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -73,16 +74,24 @@ def index():
     
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
+    
+    # graph 1
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    #print(genre_counts)
-    #print(genre_names)
-    df1 = df.drop(columns=['id','message','original','genre'])
-    df2 = df1.mean().reset_index().sort_values(by=0, ascending=0)
+
+    
+    # graph 2 top 10 message categories
+    df2 = df.drop(columns=['id','message','original','genre']).mean().reset_index().sort_values(by=0, ascending=0)
     
     genre_counts2 = list(df2['index'][:10])
     df2[0] = df2[0]*100
     genre_names2 = list(df2[0][:10].apply('{:,.2f}%'.format))
+    
+    # graph 3 correlation
+    
+    df3 = df.drop(columns=['id','message','original','genre','child_alone']).corr()
+    
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -116,13 +125,28 @@ def index():
             ],
 
             'layout': {
-                'title': 'Top 10 Message Genres',
+                'title': 'Top 10 Message Categories',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Genre"
+                    'title': "Category"
                 }
+            }
+        },
+        {
+            'data': [
+                Heatmap(
+                    z=df3,
+                    x=df3.columns,
+                    y=df3.columns
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 Message Categories'
+                
+                
             }
         }
     ]
